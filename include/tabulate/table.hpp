@@ -54,9 +54,10 @@ namespace tabulate {
 
 class Table {
 public:
+  typedef variant<std::string, const char *, Table> cell_t;
   Table() : table_(TableInternal::create()) {}
 
-  Table &add_row(const std::vector<variant<std::string, const char *, Table>> &cells) {
+  Table &add_row(const std::vector<cell_t> &cells) {
 
     if (rows_ == 0) {
       // This is the first row added
@@ -127,6 +128,8 @@ public:
 
   auto begin() -> RowIterator { return RowIterator(table_->rows_.begin()); }
   auto end() -> RowIterator { return RowIterator(table_->rows_.end()); }
+  void clear() { rows_ = cols_ = 0; table_ = TableInternal::create(); }
+  size_t cols_cnt() const { return  cols_; }
 
 private:
   friend class MarkdownExporter;
